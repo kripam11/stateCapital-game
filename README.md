@@ -199,7 +199,7 @@ This project helped me learn:
 
 ## 👨‍💻 Author
 
-**Kripa Nanda**
+**Kripa**
 Backend Developer
 
 
