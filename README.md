@@ -12,24 +12,35 @@ This project was developed as a **mini backend project while learning PostgreSQL
 * User enters the corresponding capital city
 * Instant answer validation
 * Real-time score tracking
-* Game over on incorrect answer
+* Game-over screen on incorrect answer
 * Dynamic UI rendering using EJS
-* PostgreSQL database connectivity
-* Environment variable support using `.env`
-* Simple and responsive user interface
+* PostgreSQL database integration
+* Environment variables using `.env`
+* Responsive and clean user interface
 
 ---
 
 ## 🛠️ Tech Stack
 
+### Backend
+
 * Node.js
 * Express.js
 * PostgreSQL
-* EJS
 * pg
 * dotenv
+
+### Frontend
+
 * HTML5
 * CSS3
+* EJS
+
+### Tools
+
+* Git
+* GitHub
+* Nodemon
 
 ---
 
@@ -40,6 +51,7 @@ stateCapital_game/
 │
 ├── public/
 │   └── styles/
+│       └── main.css
 │
 ├── views/
 │   └── index.ejs
@@ -47,6 +59,7 @@ stateCapital_game/
 ├── state_capital.csv
 ├── index.js
 ├── package.json
+├── package-lock.json
 ├── .env
 └── .gitignore
 ```
@@ -57,11 +70,11 @@ stateCapital_game/
 
 ### Table: `state_capital`
 
-| Column  | Type    |
-| ------- | ------- |
-| id      | SERIAL  |
-| state   | VARCHAR |
-| capital | VARCHAR |
+| Column  | Type               |
+| ------- | ------------------ |
+| id      | SERIAL PRIMARY KEY |
+| state   | VARCHAR(100)       |
+| capital | VARCHAR(100)       |
 
 ### Sample Data
 
@@ -87,4 +100,107 @@ cd stateCapital_game
 ### Install Dependencies
 
 ```bash
+npm install
 ```
+
+### Create Environment Variables
+
+Create a `.env` file in the root directory:
+
+```env
+DB_USER=postgres
+DB_HOST=localhost
+DB_NAME=world1
+DB_PASSWORD=your_password
+DB_PORT=5432
+```
+
+### Start PostgreSQL
+
+Ensure PostgreSQL is running and the `state_capital` table is populated.
+
+### Run the Application
+
+```bash
+nodemon index.js
+```
+
+or
+
+```bash
+node index.js
+```
+
+Application will run at:
+
+```text
+http://localhost:3000
+```
+
+---
+
+## 🎮 How to Play
+
+1. A random Indian state is displayed.
+2. Enter the corresponding capital city.
+3. Submit your answer.
+4. Correct answers increase your score.
+5. An incorrect answer ends the game.
+6. Restart and try to beat your previous score.
+
+---
+
+## 📸 Screenshots
+
+### Home Screen
+
+Add your screenshot here:
+
+```md
+![Home Screen](./screenshots/home.png)
+```
+
+### Gameplay
+
+```md
+![Gameplay](./screenshots/gameplay.png)
+```
+
+---
+
+## 🎯 Learning Outcomes
+
+This project helped me learn:
+
+* PostgreSQL database setup and management
+* SQL queries and data retrieval
+* Connecting PostgreSQL with Node.js using `pg`
+* Environment variable management using `dotenv`
+* Express.js routing and middleware
+* Server-side rendering using EJS
+* Form handling in Express
+* Git and GitHub workflow
+* Building full-stack applications with a database
+
+---
+
+## 🔮 Future Improvements
+
+* Multiple difficulty levels
+* Timer-based quiz mode
+* Leaderboard system
+* High score persistence using PostgreSQL
+* User authentication
+* Hints for difficult states
+* Support for Union Territories
+* Responsive mobile-first design
+
+---
+
+## 👨‍💻 Author
+
+**Kripa Nanda**
+Backend Developer
+
+
+
