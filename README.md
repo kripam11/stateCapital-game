@@ -11,7 +11,6 @@ This project was developed as a **mini backend project while learning PostgreSQL
 * Random state generated from PostgreSQL database
 * User enters the corresponding capital city
 * Instant answer validation
-* Real-time score tracking
 * Game-over screen on incorrect answer
 * Dynamic UI rendering using EJS
 * PostgreSQL database integration via Neon
