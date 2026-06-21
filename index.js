@@ -6,75 +6,77 @@ dotenv.config();
 import path from "path";
 import { fileURLToPath } from "url";
 
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-
-const db = new pg.Client({
+const pool = new pg.Pool({
   user: process.env.DB_USER,
   host: process.env.DB_HOST,
   database: process.env.DB_NAME,
   password: process.env.DB_PASSWORD,
   port: process.env.DB_PORT,
+  ssl: process.env.DB_SSL === "true" ? { rejectUnauthorized: false } : false,
 });
 
-db.connect();
 let quiz = [];
 
+async function getQuiz() {
+  if (quiz.length === 0) {
+    const result = await pool.query("SELECT * FROM state_capital");
+    quiz = result.rows;
+  }
+  return quiz;
+}
 
-db.query("SELECT * FROM state_capital ",(err,res)=>{
-    if(err){
-        console.log("Error occured",err.stack);
-    }
-    else{
-        quiz = res.rows;
-    }
-});
+function pickRandom(questions) {
+  return questions[Math.floor(Math.random() * questions.length)];
+}
 
-app.use(bodyParser.urlencoded({extended : true}));
-app.use(express.static(path.join(__dirname, "public")))
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, "public")));
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-let totalCorrect = 0;
-let currentQuestion = {};
+app.get("/", async (req, res) => {
+  try {
+    const questions = await getQuiz();
+    const question = pickRandom(questions);
+    res.render("index.ejs", { question, totalScore: 0 });
+  } catch (err) {
+    console.error("DB error:", err.stack);
+    res.status(500).send("Failed to load quiz. Check database connection.");
+  }
+});
 
-app.get("/", async (req,res)=>{
-     nextQuestion();
-    res.render("index.ejs",{
-        question : currentQuestion
+app.post("/submit", async (req, res) => {
+  try {
+    const questions = await getQuiz();
+    const { answer, currentCapital, totalScore } = req.body;
+    const score = parseInt(totalScore, 10) || 0;
+
+    const isCorrect =
+      answer.trim().toLowerCase() === currentCapital.trim().toLowerCase();
+    const newScore = isCorrect ? score + 1 : score;
+
+    const nextQuestion = pickRandom(questions);
+    res.render("index.ejs", {
+      question: nextQuestion,
+      wasCorrect: isCorrect,
+      totalScore: newScore,
     });
+  } catch (err) {
+    console.error("DB error:", err.stack);
+    res.status(500).send("Failed to load quiz. Check database connection.");
+  }
 });
-
-app.post("/submit", async (req,res)=>{
-    let isCorrect = false;
-    if(  req.body.answer.trim().toLowerCase() ===
-  currentQuestion.capital.toLowerCase()){
-        isCorrect = true;
-        totalCorrect++;
-    }
-    nextQuestion();
-    res.render("index.ejs",{
-        question : currentQuestion,
-        wasCorrect : isCorrect,
-        totalScore : totalCorrect
-    })
-});
-
-async function nextQuestion() {
-  const randomState = quiz[Math.floor(Math.random() * quiz.length)];
-  currentQuestion = randomState;
-}
-
 
 if (!process.env.VERCEL) {
-    app.listen(port, () => {
-        console.log(`Server running on port ${port}`);
-    });
+  app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
+  });
 }
 
 export default app;

@@ -10,6 +10,8 @@
 
 <body id="app">
   <form class="container" action="/submit" method="post">
+    <input type="hidden" name="currentCapital" value="<%= question.capital %>" />
+    <input type="hidden" name="totalScore" value="<%= locals.totalScore || 0 %>" />
     <div class="horizontal-container">
       <h3>
         Total Score:
